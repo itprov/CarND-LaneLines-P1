@@ -2,7 +2,6 @@
 
 [//]: # (Image References)
 
-[image1]: ./examples/grayscale.jpg "Grayscale"
 [gray_image]: ./test_images_output/gray-solidWhiteCurve.jpg "Grayscale Image"
 [blur_image]: ./test_images_output/blur-solidWhiteCurve.jpg "Blurred Image"
 [canny_image]: ./test_images_output/canny-solidWhiteCurve.jpg
@@ -20,54 +19,75 @@
 
 ### 1. Pipeline
 
+Original image:
+
+<img src="./test_images/solidWhiteCurve.jpg" width="480">
+
+##### 1.1. Pipeline: First Pass
+
 My pipeline consists of 7 steps.
 
-First, I convert the images to grayscale:
+###### Step 1. Convert the images to grayscale:
 
-![Grayscale Image][gray_image]
+<img src="./test_images_output/gray-solidWhiteCurve.jpg" width="480">
 
-<img src="./examples/grayscale.jpg" width="480">
+###### Step 2. Apply Gaussian Blur to the grayscale image to smooth out edges:
 
-Then, I apply Gaussian Blur to the grayscale image to smooth out edges:
+<img src="./test_images_output/blur-solidWhiteCurve.jpg" width="480">
 
-![Blurred Image][blur_image]
+###### Step 3. Apply Canny transform to detect edges:
 
-Then, I apply Canny transform to the blurred grayscale image:
+<img src="./test_images_output/canny-solidWhiteCurve.jpg" width="480">
 
-![Canny-transformed Image][canny_image]
+###### Step 4. Mask the image except the region of interest:
 
-Then, I mask all but the region of interest in the image:
+<img src="./test_images_output/masked-solidWhiteCurve.jpg" width="480">
 
-![Masked Image][masked_image]
+###### Step 5. Detect lines using hough transform - first pass, without
+  modifying draw_lines():
 
-Then, I detect lines using hough transform:
+<img src="./test_images_output/hough1-solidWhiteCurve.jpg" width="480">
 
-![Hough-transformed Image][hough_image]
+###### Step 6. Overlay the detected lines with original image:
 
-Then, I overlay the hough lines with original image:
+<img src="./test_images_output/weighted1-solidWhiteCurve.jpg" width="480">
 
-![Weighted Image][weighted_image]
+###### Step 7. Restore the order of R, G, B channels in the final output image:
 
-Finally, I restore the order of R, G, B channels in the final output image:
+<img src="./test_images_output/out1-solidWhiteCurve.jpg" width="480">
 
-![Final Output Image][out_image]
+##### 1.2. Pipeline: Second Pass - Improved draw_lines()
+In order to draw a single line on the left and right lanes, I created a new
+version of the draw_lines() function, named draw_solid_lines(), as follows:
 
-In order to draw a single line on the left and right lanes, I modified the
-draw_lines() function as follows:
+1. Define a function fit_line that takes arrays of points (x, y coordinates)
+  and fits them into a linear function y = mx + b using numpy.polyfit().
+  It draws that line using the given color and thickness, only if the line is
+  not too steep - i.e. m is not too low (close to horizontal line) or too high
+  (close to vertical line).
 
-1.
+2. In draw_solid_lines(), initialize lists of right and left x, y coordinates
+  For each line given by hough transform, find the slope of the line, and
+  append the points x1, y1, x2, y2 to either the right x, y coordinate list
+  (if slope is positive), or left x, y coordinate list (if slope is negative),
+  only if the line is not too steep - i.e. the slope is not too low
+  (close to horizontal line) or too high (close to vertical line).
+
+  With these improvements, the output of the last step (Step 7) is as follows:
+
+  <img src="./test_images_output/out-solidWhiteCurve.jpg" width="480">
 
 
 ### 2. Potential shortcomings with my current pipeline
 
-
-As seen in the challenge video output, my current pipeline fails to output a
-solid line in few of the video frames, as it just discards the line
-fit by np.polyfit if its slope is not within the acceptable range.
+My current pipeline discards entire lines in fit_line() if they are too
+steep horizontally or vertically. This may result in few frames with either
+left or right line missing in a given video.
 
 
 ### 3. Possible improvements to my pipeline
 
-Discard the points (x, y pairs) that cause slope of the line found by
-np.polyfit. One way to do this would be by discarding points causing high
+Instead of discarding entire line, identify & discard only the points
+(x, y pairs) that cause slope of the line to be steeper than acceptable.
+One way to do this would be by discarding points causing high
 variance in the X, Y vectors.
