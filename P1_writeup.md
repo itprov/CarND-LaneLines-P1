@@ -26,6 +26,8 @@ First, I convert the images to grayscale:
 
 ![Grayscale Image][gray_image]
 
+<img src="./examples/grayscale.jpg" width="480">
+
 Then, I apply Gaussian Blur to the grayscale image to smooth out edges:
 
 ![Blurred Image][blur_image]
@@ -51,7 +53,9 @@ Finally, I restore the order of R, G, B channels in the final output image:
 ![Final Output Image][out_image]
 
 In order to draw a single line on the left and right lanes, I modified the
-draw_lines() function by ...
+draw_lines() function as follows:
+
+1.
 
 
 ### 2. Potential shortcomings with my current pipeline
@@ -66,4 +70,4 @@ fit by np.polyfit if its slope is not within the acceptable range.
 
 Discard the points (x, y pairs) that cause slope of the line found by
 np.polyfit. One way to do this would be by discarding points causing high
-variance in the X, Y vectors. 
+variance in the X, Y vectors.
