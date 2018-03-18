@@ -23,9 +23,9 @@ Original image:
 
 <img src="./test_images/solidWhiteCurve.jpg" width="480">
 
-##### 1.1. Pipeline: First Pass
-
 My pipeline consists of 7 steps.
+
+##### 1.1. Pipeline: First Pass
 
 ###### Step 1. Convert the images to grayscale:
 
@@ -43,8 +43,7 @@ My pipeline consists of 7 steps.
 
 <img src="./test_images_output/masked-solidWhiteCurve.jpg" width="480">
 
-###### Step 5. Detect lines using hough transform - first pass, without
-  modifying draw_lines():
+###### Step 5. Detect lines using hough transform - first pass, without modifying draw_lines():
 
 <img src="./test_images_output/hough1-solidWhiteCurve.jpg" width="480">
 
@@ -55,6 +54,10 @@ My pipeline consists of 7 steps.
 ###### Step 7. Restore the order of R, G, B channels in the final output image:
 
 <img src="./test_images_output/out1-solidWhiteCurve.jpg" width="480">
+
+The video generated with this first pass of pipeline looks has segmented lines:
+
+[Segmented lines video - Pipeline pass 1](./test_videos_output/solidWhiteRight1.mp4)
 
 ##### 1.2. Pipeline: Second Pass - Improved draw_lines()
 In order to draw a single line on the left and right lanes, I created a new
@@ -77,6 +80,9 @@ version of the draw_lines() function, named draw_solid_lines(), as follows:
 
   <img src="./test_images_output/out-solidWhiteCurve.jpg" width="480">
 
+  This enables an annotated video with solid lines:
+
+  [Solid lines video - Pipeline pass 2](./test_videos_output/solidWhiteRight.mp4)
 
 ### 2. Potential shortcomings with my current pipeline
 
